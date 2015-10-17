@@ -34,6 +34,11 @@ function addTask(title) {
   });
 }
 
+$("#add-task").on('click', function(){
+  var text_title = $('#new-task-title').val();
+  addTask(text_title);
+});
+
 
 
 
