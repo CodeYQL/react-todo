@@ -1,5 +1,7 @@
 // Model
-function TasksModel() {
+function TasksModel(controller) {
+  this.controller = controller;
+
   this.next_id = 3;
   this.tasks = [{
     id: 0,
@@ -29,7 +31,7 @@ TasksModel.prototype.removeTaskWithId = function (id) {
     tasks.splice(index, 1); // remove
   }
 
-  reRenderTaskList();
+  this.controller.modelChanged();
 }
 
 TasksModel.prototype.addTask = function (title) {
@@ -40,13 +42,14 @@ TasksModel.prototype.addTask = function (title) {
 
   next_id += 1;
 
-  reRenderTaskList();
+  this.controller.modelChanged();
 }
 
 
 // Controller
-function TasksController(model) {
-  this.model = model;
+function TasksController() {
+  this.model = new TasksModel(this);
+  this.view = new TasksView(this);
 }
 
 TasksController.prototype.getTasks = function () {
@@ -62,6 +65,12 @@ TasksController.prototype.handleDeleteTaskClicked = function (el) {
   var task_id = parseInt(el.target.id.replace('remove-', ''));
   this.model.removeTaskWithId(task_id);
 }
+
+TasksController.prototype.modelChanged = function () {
+  this.view.render();
+};
+
+TasksController.prototype
 
 // View
 function TasksView(controller) {
@@ -88,8 +97,7 @@ TasksView.prototype.render = function () {
 
 }
 
-var model = new TasksModel();
-var controller = new TasksController(model);
-var view = new TasksView(controller);
+var view = new TasksView();
+var controller = new TasksController(view);
 
 $(document).ready(view.render);
