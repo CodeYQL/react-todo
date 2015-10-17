@@ -1,18 +1,78 @@
+// Model
+function TasksModel() {
+  this.next_id = 3;
+  this.tasks = [{
+    id: 0,
+    title: 'First task'
+  }, {
+    id: 1,
+    title: 'Second task'
+  }, {
+    id: 2,
+    title: 'Third task'
+  }];
+}
 
 
-var tasks = [{
-  id: 0,
-  title: 'First task'
-}, {
-  id: 1,
-  title: 'Second task'
-}, {
-  id: 2,
-  title: 'Third task'
-}];
+TasksModel.prototype.findIndexOfTaskWithId = function (id) {
+  var task = tasks.filter(function (task) {
+    return task.id === id;
+  })[0];
+
+  return tasks.indexOf(task);
+}
+
+TasksModel.prototype.removeTaskWithId = function (id) {
+  var index = findIndexOfTaskWithId(id);
+
+  if (index > -1) {
+    tasks.splice(index, 1); // remove
+  }
+
+  reRenderTaskList();
+}
+
+TasksModel.prototype.addTask = function (title) {
+  tasks.push({
+    id: next_id,
+    title: title
+  });
+
+  next_id += 1;
+
+  reRenderTaskList();
+}
 
 
-function reRenderTaskList() {
+// Controller
+function TasksController(model) {
+  this.model = model;
+}
+
+TasksController.prototype.getTasks = function () {
+  return this.model.tasks;
+}
+
+TasksController.prototype.handleAddTaskClicked = function () {
+  var text_title = $('#new-task-title').val();
+  this.model.addTask(text_title);
+}
+
+TasksController.prototype.handleDeleteTaskClicked = function (el) {
+  var task_id = parseInt(el.target.id.replace('remove-', ''));
+  this.model.removeTaskWithId(task_id);
+}
+
+// View
+function TasksView(controller) {
+  this.controller = controller;
+
+  $('#add-task').on('click', controller.handleAddTaskClicked);
+}
+
+
+TasksView.prototype.render = function () {
+  var tasks = this.controller.getTasks();
 
   var task_list = $('#task-list');
   task_list.empty(); // clear out the element and re-render the list
@@ -24,24 +84,12 @@ function reRenderTaskList() {
     task_list.append('<li id="' + task.id + '">' + task.title + task_button + '</li>');
   }
 
+  $("button[id^='remove-']").on('click', this.controller.handleDeleteTaskClicked);
+
 }
 
-function addTask(title) {
-  var next_id = tasks.length;
+var model = new TasksModel();
+var controller = new TasksController(model);
+var view = new TasksView(controller);
 
-  tasks.push({
-    id: next_id,
-    title: title
-  });
-
-  reRenderTaskList();
-}
-
-function handleAddTaskClicked() {
-  var text_title = $('#new-task-title').val();
-  addTask(text_title);
-}
-
-$('#add-task').on('click', handleAddTaskClicked);
-
-$(document).ready(reRenderTaskList);
+$(document).ready(view.render);
