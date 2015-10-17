@@ -1,0 +1,19 @@
+{
+  "name": "react-todo",
+  "version": "1.0.0",
+  "description": "A simple todo list to learn some React",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codeyql/react-todo.git"
+  },
+  "author": "Asif and Chris",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/codeyql/react-todo/issues"
+  },
+  "homepage": "https://github.com/codeyql/react-todo#readme"
+}
