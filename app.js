@@ -12,9 +12,10 @@ var tasks = [{
 }];
 
 
-function renderTaskList() {
+function reRenderTaskList() {
 
   var task_list = $('#task-list');
+  task_list.empty(); // clear out the element and re-render the list
 
   for (var i = 0; i < tasks.length; i++) {
     var task = tasks[i];
@@ -32,14 +33,15 @@ function addTask(title) {
     id: next_id,
     title: title
   });
+
+  reRenderTaskList();
 }
 
-$("#add-task").on('click', function(){
+function handleAddTaskClicked() {
   var text_title = $('#new-task-title').val();
   addTask(text_title);
-});
+}
 
+$('#add-task').on('click', handleAddTaskClicked);
 
-
-
-$(document).ready(renderTaskList);
+$(document).ready(reRenderTaskList);
